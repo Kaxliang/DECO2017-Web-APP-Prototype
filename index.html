@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diet Tracker</title>
+    <style>
+        /* 基础样式和响应式布局 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b7d9e4;
+            /* 浅蓝色背景 */
+        }
+
+        header {
+            background-color: #d87093;
+            /* 深一点的粉红色 */
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .description {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .description h2 {
+            color: #2819e1;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .description p {
+            font-size: 18px;
+            color: #3249d9;
+            margin-bottom: 5px;
+        }
+
+        /* 对于不同屏幕尺寸的响应式处理可以继续添加媒体查询 */
+        @media (max-width: 768px) {
+
+            /* 调整更小屏幕的字体大小 */
+            .description h2 {
+                font-size: 20px;
+            }
+
+            .description p {
+                font-size: 16px;
+            }
+        }
+
+        @media (min-width: 769px) {
+
+            /* 调整大屏设备的字体大小 */
+            .description h2 {
+                font-size: 28px;
+            }
+
+            .description p {
+                font-size: 20px;
+            }
+        }
+    </style>
+    <style>
+        .goal-module {
+            background-color: #fffef0;
+            /* 浅黄色，偏白 */
+            border: 2px solid #704214;
+            /* 棕紫色边框 */
+            border-radius: 18%;
+            /* 圆角 */
+            padding: 20px;
+            /* 内边距 */
+            margin: 0 10px 10px;
+            /* 水平居中 */
+            text-align: center;
+            /* 文字居中 */
+        }
+
+        .goal-module h2 {
+            color: black;
+            font-weight: bold;
+            font-size: 24px;
+            /* 字体加大 */
+            margin-bottom: 20px;
+            /* 与下方内容的间隔 */
+        }
+
+        .goal-module .input-group,
+        .goal-module .select-group {
+            display: flex;
+            margin-bottom: 15px;
+            /* 与下方内容的间隔 */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .goal-module .input-group input[type='number'],
+        .goal-module .select-group select {
+            font-weight: bold;
+            padding: 10px;
+            margin-right: 5px;
+            /* 与旁边盒子的间距 */
+            min-width: 100px;
+        }
+
+        .goal-module .input-box {
+            display: inline-block;
+            /* 盒子内联显示 */
+            font-weight: bold;
+            padding: 10px 15px;
+            /* 内边距 */
+            background-color: #fffef0;
+            /* 与背景色一致 */
+            border: none;
+            /* 无边框 */
+            box-shadow: none;
+            /* 无阴影 */
+        }
+
+        .goal-module .description {
+            color: grey;
+            font-size: 16px;
+            /* 字体缩小 */
+            margin-bottom: 20px;
+            /* 与按钮的间距 */
+        }
+
+        #start-tracking {
+            font-weight: bold;
+            color: white;
+            background-color: orange;
+            border: 2px solid black;
+            padding: 10px 20px;
+            font-size: 20px;
+            /* 字体加大 */
+            width: 50%;
+            /* 按钮宽度 */
+            cursor: pointer;
+            /* 鼠标悬停时显示手型图标 */
+            border-radius: 20px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .goal-module {
+                margin: 10px;
+                border-radius: 10%;
+            }
+
+            .goal-module h2,
+            .goal-module .input-group input[type='number'],
+            .goal-module .select-group select,
+            #start-tracking {
+                font-size: 12px;
+                /* 小屏幕上的字体大小调整 */
+            }
+        }
+    </style>
+    <style>
+        .today {
+            border: 2px solid #704214;
+            /* 棕紫色边框 */
+            border-radius: 18%;
+            /* 圆角 */
+            background-color: white;
+            padding: 20px;
+            margin: 0 10px;
+        }
+
+        .today h2 {
+            color: black;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .today-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .today-box {
+            text-align: center;
+        }
+
+        .box-title {
+            color: black;
+            font-size: 20px;
+        }
+
+        .box-number {
+            font-size: 24px;
+        }
+
+        .today-circle {
+            background: linear-gradient(#8fe28f, #d1caca);
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle-inner {
+            background-color: white;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle-text,
+        .circle-number,
+        .recommended-intake {
+            margin: 5px;
+            text-align: center;
+        }
+
+        .circle-text {
+            color: grey;
+            font-size: 16px;
+        }
+
+        .circle-number {
+            color: darkgreen;
+            font-size: 28px;
+        }
+
+        .recommended-intake {
+            color: red;
+            font-size: 14px;
+        }
+
+        .gradient-box {
+            height: 20px;
+            background: linear-gradient(to right, blue, 30%, darkgrey);
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        .box-info {
+            color: black;
+            font-size: 14px;
+        }
+
+        .intake {
+            height: 100px;
+            flex: 1;
+            margin: 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(to bottom, #faecec, #dfe695);
+            border-radius: 30px;
+            padding: 10px;
+        }
+
+        .intake-title {
+            font-size: 20px;
+        }
+
+        .intake-info {
+            font-size: 14px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .today {
+                margin: 10px;
+                border-radius: 10%;
+            }
+
+            .today-row {}
+
+            .today-box,
+            .today-circle {
+                margin-bottom: 10px;
+            }
+
+            .today-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .circle-inner {
+                width: 120px;
+                height: 120px;
+            }
+
+            .circle-text {
+                font-size: 12px;
+            }
+
+            .recommended-intake {
+                font-size: 12px;
+            }
+        }
+
+        .edit-today-container {
+            width: 100%;
+        }
+
+        .edit-today-container-title {
+            color: #1062c3;
+            font-size: 28px;
+            text-align: left;
+        }
+
+        .edit-today-container-item {
+            font-size: 24px;
+        }
+    </style>
+    <style>
+        .edit-today-module {
+            background-color: white;
+            padding: 20px;
+            margin: 0 10px;
+            /* 水平居中 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .edit-today-header {
+            background-color: #ffa505;
+            /* 黄色背景 */
+            border: 2px solid #000000;
+            /* 黑色边框 */
+            border-radius: 10px;
+            /* 圆角效果 */
+            padding: 10px;
+            /* 内边距 */
+            text-align: center;
+            margin: 0 auto 20px;
+            /* 与表单间隔 */
+        }
+
+        .edit-today-form {
+            width: 100%;
+        }
+
+        .edit-today-form label {
+            color: black;
+            display: block;
+            /* 确保标签显示为块级元素 */
+            margin-bottom: 5px;
+            /* 与输入框间隔 */
+        }
+
+        .edit-today-form input[type='text'] {
+            background-color: #f0f0f0;
+            /* 灰色背景 */
+            border: 2px solid transparent;
+            /* 透明边框 */
+            border-radius: 10px;
+            /* 圆角 */
+            width: 100%;
+            /* 宽度 */
+            padding: 10px;
+            /* 内边距 */
+            margin-bottom: 20px;
+            /* 与下一元素间隔 */
+        }
+
+        .edit-today-form input[type='text']:focus {
+            background-color: white;
+            /* 焦点时背景 */
+            border-color: #ffff00;
+            /* 焦点时黄色边框 */
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .form-buttons button {
+            border-radius: 16px;
+            /* 圆角 */
+            padding: 10px 20px;
+            /* 内边距 */
+            font-weight: bold;
+            /* 加粗 */
+            cursor: pointer;
+            /* 鼠标样式 */
+            margin-right: 10px;
+            /* 按钮间隔 */
+            justify-content: center;
+            display: flex;
+        }
+
+        .save-btn {
+            background-color: #ffff00;
+            /* 黄色背景 */
+            color: black;
+            /* 黑色字体 */
+            border: 1px solid black;
+            /* 黑色边框 */
+        }
+
+        .delete-btn {
+            background-color: black;
+            /* 黑色背景 */
+            color: white;
+            /* 白色字体 */
+            border: none;
+            /* 无边框 */
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .edit-today-module {
+                padding: 10px;
+                max-width: 100%;
+            }
+
+            .form-buttons {
+                display: flex;
+            }
+
+            .form-buttons button {
+                margin-bottom: 10px;
+                /* 按钮间隔 */
+            }
+        }
+    </style>
+    <style>
+        .search-records {
+            padding: 20px;
+            margin: 0 10px;
+            /* 水平居中 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-records .search-header {
+            background-color: #ffff00;
+            /* 黄色背景 */
+            border: 2px solid #000000;
+            /* 黑色边框 */
+            border-radius: 10px;
+            /* 圆角效果 */
+            padding: 10px;
+            /* 内边距 */
+            text-align: center;
+            margin-bottom: 20px;
+            /* 与表单间隔 */
+        }
+
+        .search-form {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            /* 和记录容器的间隔 */
+        }
+
+        .search-form label {
+            margin-right: 10px;
+            /* 标签和输入框的间隔 */
+        }
+
+        .search-form input[type='date'] {
+            margin-right: 10px;
+            /* 输入框和按钮的间隔 */
+            flex: 1;
+        }
+
+        .search-btn {
+            background-color: #ffff00;
+            /* 黄色背景 */
+            color: black;
+            /* 黑色文字 */
+            border: none;
+            border-radius: 10px;
+            /* 圆角 */
+            padding: 5px 10px;
+            /* 内边距 */
+            cursor: pointer;
+        }
+
+        .records-container {
+            background-color: white;
+            /* 白色背景 */
+            border: 2px solid #f0f0f0;
+            /* 灰色边框 */
+            border-radius: 10px;
+            /* 圆角 */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .record-item {
+            width: 30%;
+            /* 3列布局 */
+            border: 1px solid #f0f0f0;
+            /* 灰色边框 */
+            border-radius: 10px;
+            /* 圆角 */
+            text-align: center;
+            padding: 10px 10px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            /* 项目之间的间隔 */
+            font-weight: 700;
+            background: red;
+        }
+
+        .record-item p:first-child {
+            font-size: 16px;
+        }
+
+        .record-item p:last-child {
+            font-size: 23px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+                /* 调整为垂直布局 */
+                align-items: flex-start;
+            }
+
+            .search-form label,
+            .search-form input[type='date'],
+            .search-btn {
+                margin-bottom: 10px;
+                /* 增加间隔 */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1>Diet Tracker</h1>
+        </header>
+        <section class="description">
+            <h2>Customized Exclusive Diet Plans</h2>
+            <p>Tailor a diet plan that works best for you</p>
+            <p>Daily nutritional intake</p>
+            <p>Regular reminders and supervision</p>
+        </section>
+        <div class="goal-module">
+            <h2>SET YOUR GOAL !!!</h2>
+            <div class="input-group">
+                <input style="width: 80px" v-model="goal.weight" type="number" aria-label="Weight goal in KG" />
+                <span class="input-box">KG</span>
+                <span class="input-box" style="font-size: 14px; color: gray">(Select a weight)</span>
+            </div>
+            <div class="select-group">
+                <span class="input-box">Focus on</span>
+                <select v-model="goal.focus" id="focus-select" style="width: 100px" aria-label="Focus on">
+                    <option v-for="item in focusList" :key="item.value" :value="item.value" value="nutrition">
+                        {{item.label}}
+                    </option>
+                    <!-- 可以添加更多营养选择 -->
+                </select>
+                <span class="input-box">nutrition</span>
+            </div>
+            <p class="description">
+                Select a nutrient, if you are not sure you can leave it
+            </p>
+            <button id="start-tracking" @click="track">Start Tracking</button>
+        </div>
+
+        <div class="today">
+            <h2>Today's Data</h2>
+            <div class="today-row">
+                <div class="today-box">
+                    <p class="box-title">Plan Weight</p>
+                    <p class="box-number" style="color: #ffa07a">
+                        {{goal.weight || 0}}kg
+                    </p>
+                </div>
+                <div class="today-circle">
+                    <div class="circle-inner">
+                        <p class="circle-text">you can still eat</p>
+                        <p class="circle-number">
+                            {{+planData.calory - + (todayData.calory ? todayData.calory :
+                            0)}}
+                        </p>
+                        <p class="recommended-intake">
+                            Recommended intake of {{planData.calory}}
+                        </p>
+                    </div>
+                </div>
+                <div class="today-box">
+                    <p class="box-title">Now Weight</p>
+                    <p class="box-number" style="color: #ffa07a">
+                        {{todayData.weight || 0}}kg
+                    </p>
+                </div>
+                <!-- 可以添加更多的box或者调整布局 -->
+            </div>
+            <div class="today-row">
+                <div class="today-box" style="flex: 1; padding: 0 4px">
+                    <p class="box-title">Protein</p>
+                    <div class="gradient-box" style="background: linear-gradient(to right, red, 30%, darkgrey)"></div>
+                    <p class="box-info">
+                        {{todayData.protein || 0}}/{{planData.protein || 0}}g
+                    </p>
+                </div>
+                <div class="today-box" style="flex: 1; padding: 0 4px">
+                    <p class="box-title">Carbon</p>
+                    <div class="gradient-box"></div>
+                    <p class="box-info">
+                        {{todayData.carbon || 0}}/{{planData.carbon || 0}}g
+                    </p>
+                </div>
+                <div class="today-box" style="flex: 1; padding: 0 4px">
+                    <p class="box-title">Protein</p>
+                    <div class="gradient-box" style="
+                background: linear-gradient(to right, green, 30%, darkgrey);
+              "></div>
+                    <p class="box-info">
+                        {{todayData.fat || 0}}/{{planData.fat || 0}}g
+                    </p>
+                </div>
+            </div>
+            <div class="today-row">
+                <div class="today-box intake">
+                    <p class="intake-title">Water</p>
+                    <p class="intake-info" style="
+                flex: 1;
+                font-size: 30px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+                        {{todayData.water || 0}} L
+                    </p>
+                </div>
+                <div class="today-box intake">
+                    <p class="intake-title">Calroy</p>
+                    <p class="intake-info" style="
+                flex: 1;
+                font-size: 30px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+                        {{todayData.calory || 0}} kcal
+                    </p>
+                </div>
+            </div>
+            <!-- 其他数据行 -->
+        </div>
+
+        <div class="edit-today-module">
+            <div class="edit-today-header">
+                <h2>Edit Today's Data</h2>
+            </div>
+            <form class="edit-today-form">
+                <label for="dataInput">Weight:(kg)</label>
+                <input type="text" v-model="todayData.weight" id="dataInput" placeholder="Enter the weight today(kg)" />
+                <label for="dataInput">Calory:(kcal)</label>
+                <input type="text" v-model="todayData.calory" id="dataInput"
+                    placeholder="How many calories burned from the exercise" />
+                <label for="dataInput">Water:(L)</label>
+                <input type="text" v-model="todayData.water" id="dataInput"
+                    placeholder="Enter the water consumed today(ml)" />
+                <label for="dataInput">Protein:(g)</label>
+                <input type="text" v-model="todayData.protein" id="dataInput"
+                    placeholder="Enter the protein consumed today(g)" />
+                <label for="dataInput">Fat:(g)</label>
+                <input type="text" v-model="todayData.fat" id="dataInput"
+                    placeholder="Enter the fat consumed today(g)" />
+                <label for="dataInput">Carbon:(g)</label>
+                <input type="text" v-model="todayData.carbon" id="dataInput"
+                    placeholder="Enter the carbon consumed today(g)" />
+                <!-- 可以添加更多的输入框 -->
+
+                <div class="form-buttons">
+                    <button type="button" class="save-btn" @click="confirm">
+                        save
+                    </button>
+                    <button type="button" class="delete-btn" @click="deleteToday">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="search-records">
+            <div class="search-header">
+                <h2>Search Previous Records</h2>
+            </div>
+            <div class="search-form">
+                <div style="
+              width: 100%;
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            ">
+                    <label for="searchDate">Date:</label>
+                    <input v-model="searchDate" type="date" id="searchDate" />
+                    <button class="search-btn" @click="search">Search</button>
+                </div>
+            </div>
+            <div class="records-container">
+                <!-- 示例项目 -->
+                <div class="record-item" style="background: pink">
+                    <p>Protein</p>
+                    <p>{{perviousData.protein}}g</p>
+                </div>
+                <div class="record-item" style="background-color: aquamarine">
+                    <p>Fat</p>
+                    <p>{{perviousData.fat}}g</p>
+                </div>
+                <div class="record-item" style="background-color: rgb(70, 125, 213)">
+                    <p>Carbon</p>
+                    <p>{{perviousData.carbon}}g</p>
+                </div>
+                <div class="record-item" style="background-color: #ffa07a">
+                    <p>Sport Calroy</p>
+                    <p>{{perviousData.calory}}g</p>
+                </div>
+                <div class="record-item" style="background-color: aqua">
+                    <p>Water</p>
+                    <p>{{perviousData.water}}ml</p>
+                </div>
+                <div class="record-item" style="background-color: bisque">
+                    <p>Weight</p>
+                    <p>{{perviousData.weight}}g</p>
+                </div>
+                <!-- 更多 .record-item 元素根据搜索结果动态添加 -->
+            </div>
+        </div>
+        <div class="edit-today-module" style="border-radius: 10px">
+            <div class="edit-today-header">
+                <h2>{{!isEdit ? 'Plan Data':'Edit Plan Data'}}</h2>
+            </div>
+            <form v-if="isEdit" class="edit-today-form">
+                <label for="dataInput">Calory:(kcal)</label>
+                <input type="text" v-model="planData.calory" id="dataInput" placeholder="Enter your data" />
+                <label for="dataInput">Carbon:(g)</label>
+                <input type="text" v-model="planData.carbon" id="dataInput" placeholder="Enter your data" />
+                <label for="dataInput">Water:(ml)</label>
+                <input type="text" v-model="planData.water" id="dataInput" placeholder="Enter your data" />
+                <label for="dataInput">Protein:(g)</label>
+                <input type="text" v-model="planData.protein" id="dataInput" placeholder="Enter your data" />
+                <label for="dataInput">Fat:(g)</label>
+                <input type="text" v-model="planData.fat" id="dataInput" placeholder="Enter your data" />
+                <!-- 可以添加更多的输入框 -->
+
+                <div class="form-buttons">
+                    <button type="button" class="save-btn" @click="setPlanData">
+                        save
+                    </button>
+                </div>
+            </form>
+            <div v-else class="edit-today-container">
+                <div class="edit-today-container-title">nutrient distribution</div>
+                <div class="edit-today-container-item">
+                    Protein:{{planData.protein}}
+                </div>
+                <div class="edit-today-container-item">Fat:{{planData.fat}}</div>
+                <div class="edit-today-container-item">
+                    Carbon:{{planData.carbon}}
+                </div>
+                <div class="edit-today-container-title">calory distribution</div>
+                <div class="edit-today-container-item">
+                    Calory:{{planData.calory}}
+                </div>
+                <div class="edit-today-container-title">Other Nutrients</div>
+                <div class="edit-today-container-item">Water:{{planData.water}}</div>
+            </div>
+            <div v-if="!isEdit" class="form-buttons">
+                <button type="button" class="save-btn" @click="changeIsEdit">
+                    save
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+<script>
+    const baseUrl = 'http://localhost:3000';
+
+    const customFetch = async (url, data) => {
+        try {
+            const response = await fetch(`${baseUrl}${url}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+        }
+    };
+
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                focusList: [
+                    {
+                        value: 'Carbon',
+                        label: 'Carbon',
+                    },
+                    {
+                        value: 'Protein',
+                        label: 'Protein',
+                    },
+                    {
+                        value: 'Fat',
+                        label: 'Fat',
+                    },
+                    {
+                        value: 'Water',
+                        label: 'Protein',
+                    },
+                    {
+                        value: 'Calory',
+                        label: 'Calory',
+                    },
+                ],
+                goal: {
+                    weight: '0',
+                    focus: '',
+                },
+                todayData: {
+                    weight: '',
+                    calory: '',
+                    fat: '',
+                    water: '',
+                    protein: '',
+                    carbon: '',
+                },
+                perviousData: {
+                    weight: '0',
+                    calory: '0',
+                    fat: '0',
+                    water: '0',
+                    protein: '0',
+                    carbon: '0',
+                },
+                planData: {
+                    weight: '',
+                    calory: '',
+                    fat: '',
+                    water: '',
+                    protein: '',
+                    carbon: '',
+                },
+                searchDate: '',
+                dayList: [],
+                isEdit: false,
+            };
+        },
+        methods: {
+            changeIsEdit() {
+                this.isEdit = !this.isEdit;
+            },
+            async createGoal() {
+                await customFetch('/api/goals/create', {
+                    goalWeight: this.goal.weight,
+                    goalFocus: this.goal.focus,
+                    planWeight: '',
+                    planCalory: this.planData.calory,
+                    planFat: this.planData.fat,
+                    planWater: this.planData.water,
+                    planProtein: this.planData.protein,
+                    planCarbon: this.planData.carbon,
+                });
+            },
+
+            async track() {
+                this.createGoal();
+            },
+            confirm() {
+                customFetch('/api/daily/create', {
+                    ...this.todayData,
+                    date: this.formatDate(new Date()),
+                });
+            },
+            deleteToday() {
+                this.todayData = { ...this.rawTodayData };
+            },
+            search() {
+                if (!this.searchDate) return;
+                const day = this.dayList.filter((i) => i.date === this.searchDate);
+                if (day.length > 0) {
+                    this.perviousData = { ...day[day.length - 1] };
+                } else {
+                    this.perviousData = {
+                        weight: '0',
+                        calory: '0',
+                        fat: '0',
+                        water: '0',
+                        protein: '0',
+                        carbon: '0',
+                    };
+                }
+            },
+            setPlanData() {
+                this.createGoal();
+                this.changeIsEdit();
+            },
+            async getDailyList() {
+                const data = await customFetch('/api/daily/retrieve');
+                this.dayList = [...data];
+                if (this.dayList.length > 0) {
+                    const list = data.filter((i) => i.date === this.searchDate);
+                    const last = list[list.length - 1];
+                    this.rawTodayData = { ...last, id: null };
+                    this.todayData = { ...last, id: null };
+                }
+            },
+            formatDate(date) {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            },
+            async getGoal() {
+                const data = await customFetch('/api/goals/retrieve');
+                if (data.length > 0) {
+                    const last = data[data.length - 1];
+                    this.goal = {
+                        weight: last.goalWeight,
+                        focus: last.goalFocus,
+                    };
+                    this.planData = {
+                        weight: last.planWeight,
+                        calory: last.planCalory,
+                        fat: last.planFat,
+                        water: last.planWater,
+                        protein: last.planProtein,
+                        carbon: last.planCarbon,
+                    };
+                }
+            },
+        },
+        async mounted() {
+            this.searchDate = this.formatDate(new Date());
+            await this.getDailyList();
+            await this.getGoal();
+            this.search();
+        },
+    });
+</script>
+
+</html>
